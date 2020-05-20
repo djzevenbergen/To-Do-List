@@ -22,7 +22,7 @@ There are no known bugs at the time of this update.
  
 ## Support and contact details
 
-_Have a bug or an issue with this application? [Open a new issue](https://github.com/jhvozdovich/to-do-list-1) here on GitHub._
+_Have a bug or an issue with this app? submit an issue._
 
 ## Technologies Used
 
