@@ -70,18 +70,23 @@ namespace ToDoList.Tests
     }
 
     [TestMethod]
-    public void GetAll_ReturnItems_ItemList()
+    public void GetAll_ReturnsItems_ItemList()
     {
       //Arrange
       string description01 = "Walk the dog";
-      string description02 = "Walk the dishes";
-      Item newItem1 = new Item(description01);
-      Item newItem2 = new Item(description02);
+      string description02 = "Wash the dishes";
+      int priority1 = 1;
+      int priority2 = 2;
+      Item newItem1 = new Item(description01, priority1);
+      newItem1.Save(); // New code
+      Item newItem2 = new Item(description02, priority2);
+      newItem2.Save(); // New code
       List<Item> newList = new List<Item> { newItem1, newItem2 };
 
-      //Act 
+      //Act
       List<Item> result = Item.GetAll();
-      //assert
+
+      //Assert
       CollectionAssert.AreEqual(newList, result);
     }
 

@@ -6,7 +6,7 @@ namespace ToDoList.Models
   {
     public string Description { get; set; }
     public int Priority { get; set; }
-    public int Id { get; }
+    public int Id { get; set; }
     public Item(string des)
     {
       Description = des;
@@ -35,8 +35,9 @@ namespace ToDoList.Models
       else
       {
         Item newItem = (Item)otherItem;
+        bool idEquality = (this.Id == newItem.Id);
         bool descriptionEquality = (this.Description == newItem.Description);
-        return descriptionEquality;
+        return (idEquality && descriptionEquality);
       }
     }
 
@@ -52,6 +53,18 @@ namespace ToDoList.Models
       description.Value = this.Description;
       cmd.Parameters.Add(description);
       cmd.ExecuteNonQuery();
+
+      var cm = conn.CreateCommand() as MySqlCommand;
+
+      cm.CommandText = @"INSERT INTO items (priority) VALUES (@ItemPriority);";
+      MySqlParameter priority = new MySqlParameter();
+      priority.ParameterName = "@ItemPriority";
+      priority.Value = this.Priority;
+      cm.Parameters.Add(priority);
+      cm.ExecuteNonQuery();
+
+
+      Id = (int)cmd.LastInsertedId;
 
       conn.Close();
       if (conn != null)
