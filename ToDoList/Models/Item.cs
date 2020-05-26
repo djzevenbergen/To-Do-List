@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using MySql.Data.MySqlClient;
 namespace ToDoList.Models
 {
   public class Item
@@ -7,12 +7,10 @@ namespace ToDoList.Models
     public string Description { get; set; }
     public int Priority { get; set; }
     public int Id { get; }
-    private static List<Item> _instances = new List<Item> { };
     public Item(string des)
     {
       Description = des;
-      _instances.Add(this);
-      Id = _instances.Count;
+
     }
     public Item(string des, int priority)
       : this(des)
@@ -20,18 +18,45 @@ namespace ToDoList.Models
       Priority = priority;
     }
 
+    public Item(string des, int priority, int id)
+    {
+      Description = des;
+      Id = id;
+      Priority = priority;
+    }
+
     public static List<Item> GetAll()
     {
-      return _instances;
+      List<Item> allItems = new List<Item> { };
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM items;";
+      MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while (rdr.Read())
+      {
+        int itemId = rdr.GetInt32(0);
+        string itemDescription = rdr.GetString(1);
+        int itemPriority = rdr.GetInt32(2);
+        Item newItem = new Item(itemDescription, itemPriority, itemId);
+        allItems.Add(newItem);
+      }
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return allItems;
     }
 
     public static void ClearAll()
     {
-      _instances.Clear();
+
     }
     public static Item Find(int searchId)
     {
-      return _instances[searchId - 1];
+      Item placeHolderItem = new Item("placeholder item");
+      return placeHolderItem;
     }
   }
 }
