@@ -2,17 +2,24 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ToDoList.Models;
 using System.Collections.Generic;
 using System;
+using MySql.Data.MySqlClient;
 
 namespace ToDoList.Tests
 {
   [TestClass]
-  public class ItemTests : IDisposable
+  public class ItemTest : IDisposable
   {
 
     public void Dispose()
     {
       Item.ClearAll();
     }
+
+    public ItemTest()
+    {
+      DBConfiguration.ConnectionString = "server=localhost;user id=root;password=epicodus;port=3306;database=to_do_list_test;";
+    }
+
 
     [TestMethod]
     public void ItemConstructor_CreatesInstanceOfItem_Item()
@@ -51,7 +58,7 @@ namespace ToDoList.Tests
     }
 
     [TestMethod]
-    public void GetAll_ReturnsEmptyList_ItemList()
+    public void GetAll_ReturnsEmptyListFromDatabase_ItemList()
     {
       //Arrange
       List<Item> newList = new List<Item> { };
@@ -121,5 +128,27 @@ namespace ToDoList.Tests
       CollectionAssert.AreEqual(newList, result);
     }
 
+    [TestMethod]
+    public void Equals_ReturnTrueIfDescriptionsAreTheSame_Item()
+    {
+      Item firstItem = new Item("mow the lawn");
+      Item secondItem = new Item("mow the lawn");
+
+      Assert.AreEqual(firstItem, secondItem);
+    }
+
+    [TestMethod]
+
+    public void Save_SavesToDatabase_ItemList()
+    {
+      Item testItem = new Item("mow the lawn");
+
+      testItem.Save();
+      List<Item> result = Item.GetAll();
+      List<Item> testList = new List<Item> { testItem };
+
+      CollectionAssert.AreEqual(testList, result);
+    }
   }
+
 }
